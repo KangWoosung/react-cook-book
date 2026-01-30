@@ -1,0 +1,74 @@
+/* LandoNorrisText component specific CSS animation
+
+2025-12-06 00:02:33
+sibling-index() is not fully supported in FF & iOS Safari.
+
+
+
+*/
+:root {
+  --animation-delay-factor: "0.05s";
+}
+
+.landoNorrisText {
+  text-shadow: 0 1.86ex 0 currentColor;
+}
+
+.landoNorrisText span {
+  position: relative;
+  display: inline-block;
+  /* Default state: no animation (prevent initial load execution) */
+  /* Smooth color transition for hover color */
+  transition: color 0.3s ease-out;
+}
+
+.landoNorrisText.hovered span {
+  /* Hover state: letterUp animation */
+  animation: letterUp 0.3s ease-out forwards;
+  /* animation-delay for chrome  */
+  /* animation-delay: calc(sibling-index() * 0.1s); */
+  /* Use JavaScript-set CSS variables for animation-delay (sibling-index() polyfill) */
+  /* animation-delay: calc(var(--animation-delay) * var(--animation-delay-factor)); */
+  animation-delay: calc(var(--animation-delay) * 0.025s);
+}
+
+/* Apply hover color if provided */
+.landoNorrisText.has-hover-color.hovered span {
+  color: var(--hover-color);
+}
+
+/* Apply only if letterDown animation is enabled */
+.landoNorrisText.enable-letter-down:not(.hovered) span {
+  /* Hover out state: letterDown animation (return to original position) */
+  animation: letterDown 0.3s ease-out forwards;
+  animation-delay: calc(var(--animation-delay) * 0.025s);
+}
+
+@keyframes letterUp {
+  100% {
+    transform: translateY(-100%);
+  }
+}
+@keyframes letterDown {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Skip animations when accessibility mode is enabled */
+.landoNorrisText.no-animations span {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Keep hover color transition even when animations are disabled */
+.landoNorrisText.no-animations.has-hover-color span {
+  transition: color 0s !important;
+}
+
+.landoNorrisText.no-animations.has-hover-color.hovered span {
+  color: var(--hover-color);
+}

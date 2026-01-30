@@ -1,0 +1,78 @@
+@media (prefers-reduced-motion: no-preference) {
+}
+
+/* ::view-transition-group(root) {
+    animation-duration: 2s;
+    animation-timing-function: ease-in-out;
+} */
+
+:root {
+  --x: 0;
+  --y: 0;
+  --r: 0;
+}
+
+::view-transition-old(root) {
+  /* animation: move-out 500ms; */
+  animation-delay: 1000ms;
+}
+
+::view-transition-new(root) {
+  /* animation: move-in 500ms; */
+  animation: circle-in 1000ms;
+}
+
+@keyframes move-in {
+  from {
+    translate: 100% 0;
+  }
+
+  to {
+    translate: 0 0;
+  }
+}
+
+@keyframes move-out {
+  from {
+    translate: 0 0;
+  }
+
+  to {
+    translate: -100% 0;
+  }
+}
+
+@keyframes circle-in {
+  from {
+    clip-path: circle(0% at var(--x) var(--y));
+  }
+
+  to {
+    clip-path: circle(var(--r) at var(--x) var(--y));
+  }
+}
+
+@keyframes circle-out {
+  from {
+    clip-path: circle(100% at 50% 50%);
+  }
+
+  to {
+    clip-path: circle(0% at 50% 50%);
+  }
+}
+
+.dark {
+  --background: var(--dark-background);
+  --foreground: var(--dark-foreground);
+}
+
+.light {
+  --background: var(--light-background);
+  --foreground: var(--light-foreground);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}

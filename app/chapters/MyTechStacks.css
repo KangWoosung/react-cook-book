@@ -1,0 +1,33 @@
+.tech-stacks-container {
+  /* display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0; */
+}
+
+.tech-stacks-container > .tech-icon-container {
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: slideDownFadeIn 0.1s ease-in forwards;
+  /* Use CSS variable for animation-delay (set by JavaScript) */
+  animation-delay: calc(var(--animation-delay) * 0.05s);
+}
+
+/* Skip animations when accessibility mode is enabled */
+.tech-stacks-container.no-animations > .tech-icon-container {
+  opacity: 1;
+  transform: translateY(0);
+  animation: none;
+}
+
+@keyframes slideDownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

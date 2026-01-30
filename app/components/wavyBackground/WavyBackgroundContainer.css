@@ -1,0 +1,18 @@
+:root {
+  --animation-duration: 20s;
+}
+
+@keyframes move {
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.wavy-background-svg {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  height: 100%;
+  width: max(200%, 100rem);
+  opacity: 0.4;
+  animation: move var(--animation-duration) ease alternate infinite;
+}
