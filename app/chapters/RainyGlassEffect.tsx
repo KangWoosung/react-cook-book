@@ -111,7 +111,7 @@ const RainyGlassEffect = () => {
         >
           <div className="w-full h-full flex-[2] min-w-0
           border-0 border-green-500 rounded-[150px] overflow-hidden">
-              <RainyDayJSContainer
+            <RainyDayJSContainer
               backgroundImage="url(/assets/img/logo.jpg)"
               options={{
                 defaultRainDropSize: 3,
@@ -124,44 +124,45 @@ const RainyGlassEffect = () => {
                 defaultFPS: 24,
                 defaultBackgroundBlur: 10,
               }}
-              >
-                <div className="relative z-10 h-full flex flex-col items-center justify-center
+            >
+              <div className="relative z-10 h-full flex flex-col items-center justify-center
                  text-white gap-4 p-4">
-                  <h3 className="text-4xl font-bold drop-shadow-lg">
-                    RainyDay.js
-                  </h3>
-                  <p className="text-md font-light p-4 bg-black/50 rounded-md">
-                    For more options, check the code in the repository.
-                    <br />
-                    RainyDayJSContainer.tsx
-                  </p>
-                </div>
-              </RainyDayJSContainer>
+                <h3 className="text-4xl font-bold drop-shadow-lg">
+                  RainyDay.js
+                </h3>
+                <p className="text-md font-light p-4 bg-black/50 rounded-md">
+                  For more options, check the code in the repository.
+                  <br />
+                  RainyDayJSContainer.tsx
+                </p>
+              </div>
+            </RainyDayJSContainer>
           </div>
 
           <div className="w-full h-full flex-[2] min-w-0 rounded-[150px]
             border-0 border-yellow-500 overflow-hidden">
 
-              <RainDropFXContainer backgroundImage="/assets/img/logo.jpg">
-                <div className="relative z-10 h-full p-4 gap-2
+            <RainDropFXContainer backgroundImage="/assets/img/logo.jpg">
+              <div className="relative z-10 h-full p-4 gap-2
                 flex flex-col items-center justify-center text-white">
-                  <h3 className="text-4xl font-bold drop-shadow-lg">
-                    RainDropFX
-                  </h3>
-                  <p className="text-l warning-text bg-red-400 p-2 rounded-md">
-                    Important!! This component will not work when remounted!!<br />
-                  </p>
-                    <p className="text-l warning-text ">
-                    This Library uses WebGL & Canvas.<br />
-                    The Canvas must be unique and keep connected to the WebGL context.<br />
-                    If React Component is remounted, the Canvas will be disconnected from the WebGL context.
-                  </p>
-                  <p className="text-l warning-text bg-red-400 p-2 rounded-md">
-                    Do not conditionally render this component and remount it.
-                  </p>
+                <h3 className="text-4xl font-bold drop-shadow-lg">
+                  RainDropFX
+                </h3>
+                <p className="text-l warning-text bg-red-400 p-2 rounded-md">
+                  Important!! This component will not work when remounted!!<br />
+                </p>
+                <p className="text-l warning-text ">
+                  This Library uses WebGL & canvas.<br />
+                  The canvas must be unique and keep connected to the WebGL context.<br />
+                  If React Component is unmounted, the canvas will be removed from the WebGL context for good.
+                </p>
+                <p className="text-l warning-text bg-red-400 p-2 rounded-md">
+                  Do not conditionally render this component and remount it.<br />
+                  Try to control the rain effect with the React State.
+                </p>
 
-                </div>
-              </RainDropFXContainer>
+              </div>
+            </RainDropFXContainer>
           </div>
         </div>
       </div>

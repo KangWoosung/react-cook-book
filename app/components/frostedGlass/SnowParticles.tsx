@@ -120,26 +120,51 @@ function render() {
 }
 
 */
-import { useRef, useMemo, useLayoutEffect, useEffect } from "react"
+// /app/components/frostedGlass/SnowParticles.tsx
+import { useRef, useMemo, useLayoutEffect, useEffect, useState } from "react"
 import * as THREE from 'three'
 import type { Texture } from 'three'
-import { useFrame, useLoader } from '@react-three/fiber'
+import { invalidate, useFrame, useLoader, } from '@react-three/fiber'
 import { PerspectiveCamera } from '@react-three/drei'
 import { TextureLoader } from 'three'
 
 type SnowLayerParam = [[number, number, number], Texture, number, [number, number, number]]
 
 type SnowParticlesProps = {
+  /** 눈발(파티클) 켜기/끄기 (기본 false) */
+  letItSnow?: boolean,
   /** 캔버스 위에서만 마우스에 따라 카메라가 반응하도록 on/off (기본 true, 현재 보류) */
-  mouseInteraction?: boolean
+  mouseInteraction?: boolean,
   /** 눈발(파티클) 최대 개수 (기본 10000) */
-  maxCount?: number
+  maxCount?: number,
+  /** 색상 변동 켜기/끄기 (기본 false) */
+  hueVariation?: boolean,
+  /** 카메라 이동 켜기/끄기 (기본 false) */
+  cameraState?: boolean,
+  setCameraState?: (cameraState: boolean) => void,
 }
 
-export function SnowParticles({ mouseInteraction = true, maxCount = 10000 }: SnowParticlesProps) {
+export function SnowParticles({
+  letItSnow = false,
+  mouseInteraction = true,
+  maxCount = 10000,
+  hueVariation = true,
+  cameraState = false,
+  setCameraState = () => { },
+}: SnowParticlesProps) {
   const groupRef = useRef<THREE.Group>(undefined)
   const materialsRef = useRef<THREE.PointsMaterial[]>([])
   const cameraRef = useRef<THREE.PerspectiveCamera>(null)
+
+  // const [cameraState, setCameraState] = useState(false)
+
+  // useFrame 콜백은 R3F가 한 번 등록해 두고 재사용하므로, prop인 letItSnow는 오래된 클로저로 남을 수 있음.
+  // demand 모드에서 매 프레임 invalidate()를 호출하려면 항상 최신 값을 읽어야 하므로 ref 사용.
+  const letItSnowRef = useRef(letItSnow)
+  useEffect(() => {
+    letItSnowRef.current = letItSnow
+  }, [letItSnow])
+
   // 오리지널: mouseX = event.clientX - windowHalfX, mouseY = event.clientY - windowHalfY
   const mouseRef = useRef({ x: 0, y: 0 })
 
@@ -230,37 +255,72 @@ export function SnowParticles({ mouseInteraction = true, maxCount = 10000 }: Sno
     return () => document.body.removeEventListener("pointermove", onPointerMove)
   }, [])
 
+  // frameloop="demand" 일 때: useFrame은 실행되지 않는다.
+  // invalidate() 가 실행된 이후에만 useFrame 의 코드가 실행됨.
+  // letItSnow가 true가 되어도 아무도 첫 프레임을 요청하지 않으면 useFrame이 한 번도 호출되지 않음.
+  // 따라서 true로 바뀔 때 한 번 invalidate()를 호출해 루프를 시작함.
+  useEffect(() => {
+    if (letItSnow) invalidate()
+  }, [letItSnow])
+
   useFrame((state) => {
+    const active = letItSnowRef.current
+    if (!active) return
+
+    invalidate()
+
     // 오리지널: const time = Date.now() * 0.00005
     const time = state.clock.elapsedTime * 0.05
+    const { x: mouseX, y: mouseY } = mouseRef.current
 
-    // 오리지널: camera.position.x += (mouseX - camera.position.x) * 0.05
+    // 카메라: 우리가 소유한 카메라만 수정 (훅 반환값 직접 수정 방지)
     const cam = cameraRef.current
-    if (cam && mouseInteraction) {
-      const { x: mouseX, y: mouseY } = mouseRef.current
-      cam.position.x += (mouseX - cam.position.x) * 0.05
-      cam.position.y += (-mouseY - cam.position.y) * 0.05
-      cam.lookAt(0, 0, 0)
+    if (cam) {
+      // if (!cameraSetOff) {
+      //   // console.log('cameraSetOff', cameraSetOff)
+      //   cam.position.x += (-360 - cam.position.x) * 0.05
+      //   cam.position.y += (-140 - cam.position.y) * 0.05
+      //   cam.lookAt(0, 0, 0)
+      // }
+      if (cameraState) {
+        cam.position.x += (-360 - cam.position.x) * 0.05
+        cam.position.y += (-140 - cam.position.y) * 0.05
+        cam.lookAt(0, 0, 0)
+      }
+
+      if (mouseInteraction) {
+        cam.position.x += (mouseX - cam.position.x) * 0.05
+        cam.position.y += (-mouseY - cam.position.y) * 0.05
+      }
     }
 
     // 오리지널: object.rotation.y = time * (i < 4 ? i + 1 : -(i + 1))
-    groupRef.current?.children.forEach((obj, i) => {
-      if (obj instanceof THREE.Points) {
-        obj.rotation.y = time * (i < 4 ? i + 1 : -(i + 1))
-      }
+    // Points만 골라 레이어 인덱스(0~4)로 회전 적용. group 자식 순서에 영향받지 않도록 함
+    const points = (groupRef.current?.children.filter(
+      (obj): obj is THREE.Points => obj instanceof THREE.Points
+    ) ?? []) as THREE.Points[]
+    points.forEach((obj, i) => {
+      obj.rotation.y = time * (i < 4 ? i + 1 : -(i + 1))
     })
 
     // 오리지널: h = (360 * (color[0] + time) % 360) / 360
-    materialsRef.current.forEach((mat, i) => {
-      const color = parameters[i][0]
-      const h = ((color[0] + time) * 360) % 360 / 360
-      mat.color.setHSL(h, color[1], color[2])
-    })
+    if (hueVariation) {
+      materialsRef.current.forEach((mat, i) => {
+        const color = parameters[i][0]
+        const h = ((color[0] + time) * 360) % 360 / 360
+        mat.color.setHSL(h, color[1], color[2])
+      })
+    }
   })
 
   return (
     <group ref={groupRef}>
-      <PerspectiveCamera ref={cameraRef} makeDefault position={[0, 0, 1000]} />
+      <PerspectiveCamera
+        ref={cameraRef}
+        makeDefault
+        position={[0, 0, 1000.00001]}
+        onUpdate={(cam) => cam.lookAt(0, 0, 0)}
+      />
       {parameters.map(([, , , rotation], i) => (
         <points
           key={i}

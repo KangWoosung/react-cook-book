@@ -5,6 +5,7 @@ import "./styles/style.css";
 import SettingsMenu from "./components/SettingsMenu";
 import RainCanvasRoot from "./components/RainCanvasRoot";
 import AppR3FExtend from "./components/AppR3FExtend";
+import { AUTHOR } from "@/constants";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,9 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "KangWoosung&apos;s React Cook Book",
+  title: `${AUTHOR}'s React Cook Book`,
   description:
-    "KangWoosung&apos;s React Cook Book showcasing CSS transitions, animations, and tech stacks",
+    `${AUTHOR}'s React Cook Book showcasing CSS transitions, animations, and tech stacks`,
 };
 
 export default function RootLayout({
@@ -35,7 +36,7 @@ export default function RootLayout({
       >
         <header className="w-full py-8 px-16 border-b flex flex-row items-center justify-between">
           <h1 className="text-4xl font-bold">
-            KangWoosung&apos;s React Cook Book
+            {AUTHOR}&apos;s React Cook Book
           </h1>
           <div className="flex flex-row items-center gap-4">
             <SettingsMenu />
@@ -47,7 +48,7 @@ export default function RootLayout({
         <footer className="w-full py-8 px-16 border-t bg-gray-50 dark:bg-gray-900">
           <div className="max-w-6xl mx-auto text-center text-sm text-gray-600 dark:text-gray-400">
             <p className="font-light">
-              © 2026 KangWoosung&apos;s React Cook Book.
+              © 2026 {AUTHOR}&apos;s React Cook Book.
               <br />
               MIT License.
             </p>

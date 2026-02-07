@@ -54,7 +54,7 @@ type OptionsType = {
   defaultRainDropVarianceRate?: number;
   defaultRainDropIntensity?: number;
   defaultGravityAngle?: number;
-  defaultGravityThreshold? : number;
+  defaultGravityThreshold?: number;
   defaultGravityAngleVariance?: number;
   defaultFPS?: number;
   defaultBackgroundBlur?: number;
@@ -305,7 +305,7 @@ const RainyDayJSContainer = ({
 
     // 🔥 Cleanup 함수 - 확실한 정리
     return () => {
-      console.log("[RainyDay] Cleanup started");
+      // console.log("[RainyDay] Cleanup started");
       isCleanedUp = true;
 
       // 모든 setTimeout 정리
@@ -313,7 +313,7 @@ const RainyDayJSContainer = ({
         window.clearTimeout(id);
       });
       timeoutIdsRef.current = [];
-      console.log("[RainyDay] All timeouts cleared");
+      // console.log("[RainyDay] All timeouts cleared");
 
       // RainyDay 인스턴스 정리
       if (rainyDayRef.current) {
@@ -321,20 +321,20 @@ const RainyDayJSContainer = ({
           // 🔥 애니메이션 먼저 멈춤
           if (rainyDayRef.current.pause) {
             rainyDayRef.current.pause();
-            console.log("[RainyDay] Animation paused");
+            // console.log("[RainyDay] Animation paused");
           }
 
           // 🔥 인스턴스 파괴
           if (rainyDayRef.current.destroy) {
             rainyDayRef.current.destroy();
-            console.log("[RainyDay] Instance destroyed");
+            // console.log("[RainyDay] Instance destroyed");
           }
         } catch (error) {
-          console.error("[RainyDay] Cleanup error:", error);
+          // console.error("[RainyDay] Cleanup error:", error);
         }
 
         rainyDayRef.current = null;
-        console.log("[RainyDay] Reference cleared");
+        // console.log("[RainyDay] Reference cleared");
       }
 
       setInitialized(false);
@@ -355,13 +355,13 @@ const RainyDayJSContainer = ({
         const totalMB = (performance.memory.totalJSHeapSize / 1048576).toFixed(
           2
         );
-        console.log(
-          `[Memory] Canvas: ${canvases.length} | Used: ${usedMB}MB / ${totalMB}MB | RainyDay: ${rainyDayRef.current ? "alive" : "null"}`
-        );
+        // console.log(
+        // `[Memory] Canvas: ${canvases.length} | Used: ${usedMB}MB / ${totalMB}MB | RainyDay: ${rainyDayRef.current ? "alive" : "null"}`
+        // );
       } else {
-        console.log(
-          `[Memory] Canvas: ${canvases.length} | RainyDay: ${rainyDayRef.current ? "alive" : "null"}`
-        );
+        // console.log(
+        // `[Memory] Canvas: ${canvases.length} | RainyDay: ${rainyDayRef.current ? "alive" : "null"}`
+        // );
       }
     };
 
@@ -369,7 +369,7 @@ const RainyDayJSContainer = ({
 
     return () => {
       clearInterval(interval);
-      console.log("[Memory] Monitoring stopped");
+      // console.log("[Memory] Monitoring stopped");
     };
   }, [mounted]);
 
